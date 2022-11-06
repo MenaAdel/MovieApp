@@ -1,9 +1,5 @@
 package com.example.movieapp.extentions
 
-import android.content.Context
-import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
-import android.os.Build
 import android.view.View
 import android.widget.ImageView
 import com.bumptech.glide.Glide

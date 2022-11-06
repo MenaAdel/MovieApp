@@ -1,9 +1,10 @@
-package com.example.movieapp.ui.main
+package com.example.movieapp.ui
 
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
+import java.util.*
 
 fun isNetworkAvailable(context: Context): Boolean {
     val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
@@ -13,9 +14,7 @@ fun isNetworkAvailable(context: Context): Boolean {
         return when {
             actNw.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
             actNw.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
-            //for other device how are able to connect with Ethernet
             actNw.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
-            //for check internet over Bluetooth
             actNw.hasTransport(NetworkCapabilities.TRANSPORT_BLUETOOTH) -> true
             else -> false
         }
@@ -23,3 +22,7 @@ fun isNetworkAvailable(context: Context): Boolean {
         return connectivityManager.isDefaultNetworkActive
     }
 }
+
+fun getCurrentTime() = Calendar.getInstance().get(Calendar.HOUR)
+
+

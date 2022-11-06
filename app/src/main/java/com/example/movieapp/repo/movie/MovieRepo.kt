@@ -6,4 +6,7 @@ interface MovieRepo {
 
     suspend fun getMovies(apiKey: String ,page: Int): List<Movie>?
     fun getMovieDetails(id: Int): Movie?
+    fun deleteMovies()
+    fun saveTime(time: Int)
+    fun getTime(): Int?
 }

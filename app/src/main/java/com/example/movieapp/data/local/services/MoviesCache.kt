@@ -6,4 +6,7 @@ interface MoviesCache {
     suspend fun insertMovies(movies: List<Movie>)
     suspend fun getMovies(): List<Movie>?
     fun getMovieDetails(id: Int): List<Movie>?
+    fun deleteMovies()
+    fun saveTime(time: Int)
+    fun getTime(): Int?
 }

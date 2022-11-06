@@ -1,4 +1,4 @@
-package com.example.movieapp.ui.main
+package com.example.movieapp.ui
 
 import android.os.Bundle
 import androidx.activity.viewModels
@@ -30,50 +30,4 @@ class MainActivity : AppCompatActivity() {
         val navController = findNavController(R.id.nav_host_fragment_content_main)
         appBarConfiguration = AppBarConfiguration(navController.graph)
     }
-
-    /*private fun initView() {
-        viewModel.movieLiveData.observe(this) { states ->
-            run {
-                when (states) {
-                    is ScreenState.Loading -> showLoadingState()
-                    is ScreenState.Error -> showErrorState()
-                    is ScreenState.Success -> handleSuccessState(states.list)
-                }
-            }
-        }
-    }
-
-    private fun showLoadingState() {
-        with(binding) {
-            progress.show()
-            movieRecycler.gone()
-            emptyText.gone()
-        }
-    }
-
-    private fun showErrorState() {
-        with(binding) {
-            progress.gone()
-            movieRecycler.gone()
-            emptyText.show()
-        }
-    }
-
-    private fun handleSuccessState(movies: List<Movie>){
-        moviesAdapter.updateMoviesList(movies)
-        with(binding) {
-            progress.gone()
-            movieRecycler.show()
-            emptyText.gone()
-
-            movieRecycler.apply {
-                adapter = moviesAdapter
-                layoutManager = GridLayoutManager(this@MainActivity ,2)
-            }
-        }
-    }
-
-    private fun handleItemClicked(id: Int?) {
-
-    }*/
 }
