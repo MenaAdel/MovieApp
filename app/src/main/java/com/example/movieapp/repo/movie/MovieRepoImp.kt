@@ -40,12 +40,16 @@ class MovieRepoImp @Inject constructor(
         }
     }
 
-    suspend fun getLocalMovies(): List<Movie>? {
+    private suspend fun getLocalMovies(): List<Movie>? {
         return moviesCache.getMovies()
     }
 
     private suspend fun saveMovies(movies: List<Movie>) {
         moviesCache.insertMovies(movies)
+    }
+
+    override fun getMovieDetails(id: Int): Movie? {
+        return moviesCache.getMovieDetails(id)?.first()
     }
 
 }

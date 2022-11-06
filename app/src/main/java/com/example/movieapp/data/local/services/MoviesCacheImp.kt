@@ -12,4 +12,8 @@ class MoviesCacheImp @Inject constructor(private val dao: MovieAppDao) : MoviesC
     override suspend fun getMovies(): List<Movie> {
         return dao.getMovies()
     }
+
+    override fun getMovieDetails(id: Int): List<Movie> {
+        return dao.getMovieDetails(id)
+    }
 }

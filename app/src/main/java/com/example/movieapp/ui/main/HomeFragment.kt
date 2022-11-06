@@ -1,15 +1,17 @@
 package com.example.movieapp.ui.main
 
 import android.os.Bundle
-import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupActionBarWithNavController
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.movieapp.API_KEY
+import com.example.movieapp.MOVIE_ID
 import com.example.movieapp.R
-import com.example.movieapp.databinding.ActivityMainBinding
+import com.example.movieapp.databinding.FragmentHomeBinding
 import com.example.movieapp.extentions.gone
 import com.example.movieapp.extentions.show
 import com.example.movieapp.model.Movie
@@ -18,21 +20,28 @@ import com.example.movieapp.ui.main.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity() {
+class HomeFragment : Fragment() {
 
-    private lateinit var binding: ActivityMainBinding
-    private lateinit var appBarConfiguration: AppBarConfiguration
+    private lateinit var binding: FragmentHomeBinding
+    private val viewModel: MainViewModel by viewModels()
+    private val moviesAdapter: MoviesAdapter by lazy { MoviesAdapter(::handleItemClicked , listOf()) }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        val navController = findNavController(R.id.nav_host_fragment_content_main)
-        appBarConfiguration = AppBarConfiguration(navController.graph)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = FragmentHomeBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
-    /*private fun initView() {
-        viewModel.movieLiveData.observe(this) { states ->
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        viewModel.getMovies(API_KEY ,1)
+        initView()
+    }
+
+    private fun initView() {
+        viewModel.movieLiveData.observe(viewLifecycleOwner) { states ->
             run {
                 when (states) {
                     is ScreenState.Loading -> showLoadingState()
@@ -68,12 +77,14 @@ class MainActivity : AppCompatActivity() {
 
             movieRecycler.apply {
                 adapter = moviesAdapter
-                layoutManager = GridLayoutManager(this@MainActivity ,2)
+                layoutManager = GridLayoutManager(context ,2)
             }
         }
     }
 
     private fun handleItemClicked(id: Int?) {
-
-    }*/
+        val bundle = Bundle()
+        bundle.putInt(MOVIE_ID ,id ?: 0)
+        findNavController().navigate(R.id.action_homeFragment_to_detailsFragment ,bundle)
+    }
 }

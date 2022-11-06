@@ -14,4 +14,7 @@ interface MovieAppDao {
 
     @Query("Select * from movie")
     fun getMovies(): List<Movie>
+
+    @Query("Select * from movie where id=:id")
+    fun getMovieDetails(id: Int): List<Movie>
 }

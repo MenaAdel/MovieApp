@@ -5,4 +5,5 @@ import com.example.movieapp.model.Movie
 interface MovieRepo {
 
     suspend fun getMovies(apiKey: String ,page: Int): List<Movie>?
+    fun getMovieDetails(id: Int): Movie?
 }
