@@ -11,6 +11,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
+import kotlin.math.abs
 
 class MovieRepoImp @Inject constructor(
     private val moviesCache: MoviesCache,
@@ -29,8 +30,10 @@ class MovieRepoImp @Inject constructor(
         }
     }
 
-    private fun checkTimeToUpdate(currentTime: Int = getCurrentTime()): Boolean {
-        val savedTime = getTime()
+    private fun checkTimeToUpdate(
+        currentTime: Int = getCurrentTime(),
+        savedTime: Int? = getTime()
+    ): Boolean {
         return if (canUpdateData(savedTime, currentTime)) {
             deleteMovies()
             true
@@ -45,7 +48,8 @@ class MovieRepoImp @Inject constructor(
     }
 
     private fun canUpdateData(savedTime: Int?, currentTime: Int) =
-        ((savedTime ?: 0) - currentTime) >= TIME_TO_UPDATE
+        canUpdateDataUseCase(savedTime, currentTime)
+
 
     private suspend fun getRemoteMovies(apiKey: String, page: Int): List<Movie>? {
         val response = apiHelper.getMovies(apiKey, page)
