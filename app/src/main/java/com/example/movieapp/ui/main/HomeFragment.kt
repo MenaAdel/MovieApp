@@ -6,7 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.paging.PagingData
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.movieapp.API_KEY
 import com.example.movieapp.MOVIE_ID
@@ -18,26 +20,43 @@ import com.example.movieapp.model.Movie
 import com.example.movieapp.ui.main.adapter.MoviesAdapter
 import com.example.movieapp.ui.main.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
 
     private lateinit var binding: FragmentHomeBinding
     private val viewModel: MainViewModel by viewModels()
-    private val moviesAdapter: MoviesAdapter by lazy { MoviesAdapter(::handleItemClicked , listOf()) }
+    private val moviesAdapter: MoviesAdapter by lazy {
+        MoviesAdapter(
+            ::handleItemClicked
+        )
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        viewModel.getMovies(API_KEY ,1)
         initView()
+        super.onViewCreated(view, savedInstanceState)
+
+        viewModel.getMovies(API_KEY, 1)
+        lifecycleScope.launch(Dispatchers.Main) {
+            viewModel.items.collectLatest {
+                it.let {
+                    handleSuccessState(it)
+                    //moviesAdapter.submitData(it)
+                }
+            }
+        }
+
     }
 
     private fun initView() {
@@ -46,7 +65,6 @@ class HomeFragment : Fragment() {
                 when (states) {
                     is ScreenState.Loading -> showLoadingState()
                     is ScreenState.Error -> showErrorState()
-                    is ScreenState.Success -> handleSuccessState(states.list)
                 }
             }
         }
@@ -68,23 +86,34 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun handleSuccessState(movies: List<Movie>){
-        moviesAdapter.updateMoviesList(movies)
+    private suspend fun handleSuccessState(movies: PagingData<Movie>) {
         with(binding) {
             progress.gone()
             movieRecycler.show()
             emptyText.gone()
 
             movieRecycler.apply {
+                val manager = GridLayoutManager(context, 2)
                 adapter = moviesAdapter
-                layoutManager = GridLayoutManager(context ,2)
+                layoutManager = manager
+
+                addOnScrollListener(object : ScrollingPagination(manager) {
+                    override fun loadMoreDate() {
+                        viewModel.getScrollingMovies()
+                    }
+                })
             }
+            moviesAdapter.submitData(movies)
+            if (moviesAdapter.snapshot().items.isEmpty()) {
+                showErrorState()
+            }
+
         }
     }
 
     private fun handleItemClicked(id: Int?) {
         val bundle = Bundle()
-        bundle.putInt(MOVIE_ID ,id ?: 0)
-        findNavController().navigate(R.id.action_homeFragment_to_detailsFragment ,bundle)
+        bundle.putInt(MOVIE_ID, id ?: 0)
+        findNavController().navigate(R.id.action_homeFragment_to_detailsFragment, bundle)
     }
 }

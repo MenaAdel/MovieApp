@@ -1,6 +1,7 @@
 package com.example.movieapp.di
 
 import android.content.Context
+import com.example.movieapp.data.local.preference.Preferences
 import com.example.movieapp.data.local.services.MoviesCache
 import com.example.movieapp.data.remote.service.ApiHelper
 import com.example.movieapp.repo.movie.MovieRepo
@@ -19,8 +20,9 @@ object RepositoryModule {
     fun provideMoviesRepo(
         moviesCache: MoviesCache,
         apiHelper: ApiHelper,
+        preferences: Preferences,
         @ApplicationContext context: Context
     ): MovieRepo {
-        return MovieRepoImp(moviesCache, apiHelper ,context)
+        return MovieRepoImp(moviesCache, apiHelper, preferences, context)
     }
 }

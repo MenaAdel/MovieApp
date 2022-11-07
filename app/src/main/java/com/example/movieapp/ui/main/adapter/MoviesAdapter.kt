@@ -1,6 +1,5 @@
 package com.example.movieapp.ui.main.adapter
 
-import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
@@ -11,18 +10,12 @@ import com.example.movieapp.extentions.setImage
 import com.example.movieapp.model.Movie
 
 class MoviesAdapter(
-    val listener: (Int?) -> Unit,
-    var movies: List<Movie>
-) : RecyclerView.Adapter<MoviesAdapter.MoviesViewHolder>() {
+    val listener: (Int?) -> Unit
+) : PagingDataAdapter<Movie, MoviesAdapter.MoviesViewHolder>(diffCallback = COMPARATOR) {
 
 
     override fun onBindViewHolder(holder: MoviesViewHolder, position: Int) {
-        holder.bind(movies[position])
-    }
-
-    fun updateMoviesList(movies: List<Movie>) {
-        this.movies = movies
-        notifyDataSetChanged()
+        getItem(position)?.let { holder.bind(it) }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MoviesViewHolder {
@@ -48,5 +41,13 @@ class MoviesAdapter(
         }
     }
 
-    override fun getItemCount(): Int = movies.size
+    companion object {
+        private val COMPARATOR = object : DiffUtil.ItemCallback<Movie>() {
+            override fun areItemsTheSame(oldItem: Movie, newItem: Movie): Boolean =
+                oldItem.id == newItem.id
+
+            override fun areContentsTheSame(oldItem: Movie, newItem: Movie): Boolean =
+                oldItem == newItem
+        }
+    }
 }

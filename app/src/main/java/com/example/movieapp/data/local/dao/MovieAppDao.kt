@@ -1,10 +1,12 @@
 package com.example.movieapp.data.local.dao
 
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.example.movieapp.model.Movie
+import com.example.movieapp.model.MovieResponse
 import com.example.movieapp.model.TimeModel
 
 @Dao
@@ -14,7 +16,7 @@ interface MovieAppDao {
     suspend fun insertMovie(movies: List<Movie>)
 
     @Query("Select * from movie")
-    fun getMovies(): List<Movie>
+    fun getMovies(): PagingSource<Int, Movie>
 
     @Query("Delete from movie")
     fun deleteMovies()

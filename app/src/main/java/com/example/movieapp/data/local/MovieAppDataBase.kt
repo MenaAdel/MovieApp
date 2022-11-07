@@ -4,10 +4,10 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import com.example.movieapp.data.local.dao.MovieAppDao
 import com.example.movieapp.model.Movie
+import com.example.movieapp.model.MovieResponse
 import com.example.movieapp.model.TimeModel
 
-@Database(entities = [Movie::class ,TimeModel::class] ,version = 4)
+@Database(entities = [Movie::class ,TimeModel::class] ,version = 5)
 abstract class MovieAppDataBase: RoomDatabase() {
-
     abstract fun getMovieAppDao(): MovieAppDao
 }
